@@ -4,6 +4,8 @@ import RegisterForm from './RegisterForm'
 import NewSession from './NewSession'
 import Dashboard from './Dashboard'
 import Statistics from './Statistics'
+import User from './User'
+
 function App() {
 
     return (
@@ -14,6 +16,7 @@ function App() {
                 <Route path="/newsession" element={<NewSession />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/statistics" element={<Statistics />} />
+                <Route path="/user" element={<User />} />
             </Routes>
         </BrowserRouter>
     )
