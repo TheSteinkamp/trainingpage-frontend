@@ -3,6 +3,7 @@ import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 import NewSession from './NewSession'
 import Dashboard from './Dashboard'
+import Statistics from './Statistics'
 function App() {
 
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/newsession" element={<NewSession />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/statistics" element={<Statistics />} />
             </Routes>
         </BrowserRouter>
     )
