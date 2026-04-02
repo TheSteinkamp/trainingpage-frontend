@@ -1,14 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { useAuth } from "./contexts/AuthContext";
 
 function NewSession() {
-  //const { user } = useAuth();
   const [type, setType] = useState("");
   const [duration, setDuration] = useState(0);
   const [description, setDescription] = useState("")
   const [exercises, setExercises] = useState([]);
-
+  const API_BASE = "http://localhost:8080/training";
   const addExerciseField = () => {
     setExercises([...exercises, { name: "",description: "", repetitions: 0, sets: 0 }]);
   };
@@ -19,6 +17,7 @@ function NewSession() {
     setExercises(updatedExercises);
   };
 
+  // spara träning
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trainingData = {
@@ -29,9 +28,8 @@ function NewSession() {
       userId: 1,
       exercises: exercises
     };
-
     try {
-      await axios.post('http://localhost:8080/training/new', trainingData);
+      await axios.post(`${API_BASE}/training/new`, trainingData);
       alert("Träning sparad!");
       handleCleanAll();
     } catch (err) {
@@ -48,17 +46,17 @@ function NewSession() {
 
   return (
     <div className="container mt-4">
-      <h2>Logga nytt pass</h2>
+      <h2>Registrera nytt pass</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Typ (t.ex. Ben)" value={type} onChange={e => setType(e.target.value)} className="form-control mb-2" />
         <input type="number" placeholder="Minuter" value={duration} onChange={e => setDuration(e.target.value)} className="form-control mb-2" />
-        <input type="text" placeholder="Beskrivning" value={description} onChange={e => setDescription(e.target.value)} className="form-control mb-2" />
+        <input type="text" placeholder="Kommentarer" value={description} onChange={e => setDescription(e.target.value)} className="form-control mb-2" />
         
         <h4>Övningar</h4>
         {exercises.map((ex, index) => (
           <div key={index} className="border p-2 mb-2">
             <input type="text" placeholder="Namn" onChange={e => handleExerciseChange(index, "name", e.target.value)} className="form-control mb-1" />
-            <input type="text" placeholder="Beskrivning" onChange={e => handleExerciseChange(index, "description", e.target.value)} className="form-control mb-1" />
+            <input type="text" placeholder="Kommentarer" onChange={e => handleExerciseChange(index, "description", e.target.value)} className="form-control mb-1" />
             <input type="number" placeholder="Reps" onChange={e => handleExerciseChange(index, "repetitions", e.target.value)} className="form-control mb-1" />
             <input type="number" placeholder="Sets" onChange={e => handleExerciseChange(index, "sets", e.target.value)} className="form-control mb-1" />
           </div>
