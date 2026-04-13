@@ -4,10 +4,10 @@ import axios from "axios";
 function Trainings() {
   const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_BASE = "http://localhost:8080/training";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    axios.get(`${API_BASE}/all`)
+    axios.get(`${API_BASE}/training/all`)
       .then(res => {
         setTrainings(res.data);
         setLoading(false);

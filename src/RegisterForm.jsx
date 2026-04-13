@@ -1,54 +1,58 @@
 import { useState } from "react"
 import axios from "axios"
-import { useNavigate, Link, useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 
 function RegisterForm() {
     const navigate = useNavigate();
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [error, setError] = useState("");
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: ""
+    });
+    const API_BASE = import.meta.env.VITE_API_URL;
 
-    async function handleRegistration(e) {
-        e.preventDefault()
-        try {
-            const requestBody = {name, email, password}
-            const response = await axios.post('http://localhost:8080/user/new', requestBody)
-            console.log("Registration successful!", response.data);
-            navigate('/login')
-        } catch (error) {
-            console.log(error);
-            if (error.response) {
-                alert(`Registration failed: error`);
-            } else {
-                alert("unable to connect to the server");
-            }
-        }
-    }
+    // ny användare
+    const handleCreateUser = (e) => {
+        e.preventDefault();
+        axios.post(`${API_BASE}/user/register`, formData)
+            .then(res => {
+                alert(`Användare ${res.data.name} skapad!`);
+                setFormData({ name: "", email: "", password: "" });
+                navigate('/login')
+            })
+            .catch(() => setError("Kunde inte skapa användare"));
+    };
 
     return (
-        <div className="auth-page">
-            <div className="auth-card">
-                <form onSubmit={handleRegistration}>
-                    <h2 className="text-center mb-4">
-                        Ny användare
-                    </h2>
-                    <div className="mb-3">
-                        <label htmlFor="name" className="form-label">Namn</label>
-                        <input onChange={e => { setName(e.target.value) }} type="name" className="form-control" id="name" required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input onChange={e => { setEmail(e.target.value) }} type="email" className="form-control" id="email" required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Lösenord</label>
-                        <input onChange={e => { setPassword(e.target.value) }} type="password" className="form-control" id="password" required />
-                    </div>
-                    <button type="submit" className="btn btn-success w-100">Registrera</button>
-                    <p className="text-center mt-3">
-                        Registrerad <Link to="/login">Login</Link>
-                    </p>
+
+
+        <div className="container mt-4">
+            <h2 className="mb-4">Ny användare</h2>
+            {error && <div className="alert alert-danger">{error}</div>}
+            {/* Skapa ny användare */}
+            <div className="card p-4 mb-4 shadow-sm">
+                <h3>Registrera ny användare</h3>
+                <form onSubmit={handleCreateUser}>
+                    <input
+                        type="text" placeholder="Namn" value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        required className="form-control mb-2"
+                    />
+                    <input
+                        type="email" placeholder="Email" value={formData.email}
+                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                        required className="form-control mb-2"
+                    />
+                    <input
+                        type="password" placeholder="Lösenord" value={formData.password}
+                        onChange={e => setFormData({ ...formData, password: e.target.value })}
+                        required className="form-control mb-2"
+                    />
+                    <button type="submit" className="btn btn-success w-100">
+                        Spara Användare
+                    </button>
                 </form>
             </div>
         </div>

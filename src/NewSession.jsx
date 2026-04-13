@@ -6,7 +6,7 @@ function NewSession() {
   const [duration, setDuration] = useState(0);
   const [description, setDescription] = useState("")
   const [exercises, setExercises] = useState([]);
-  const API_BASE = "http://localhost:8080/training";
+  const API_BASE = import.meta.env.VITE_API_URL;
   const addExerciseField = () => {
     setExercises([...exercises, { name: "",description: "", repetitions: 0, sets: 0 }]);
   };
@@ -48,7 +48,7 @@ function NewSession() {
     <div className="container mt-4">
       <h2>Registrera nytt pass</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Typ (t.ex. Ben)" value={type} onChange={e => setType(e.target.value)} className="form-control mb-2" />
+        <input type="text" placeholder="Fokus på passet (t.ex. överkropp)" value={type} onChange={e => setType(e.target.value)} className="form-control mb-2" />
         <input type="number" placeholder="Minuter" value={duration} onChange={e => setDuration(e.target.value)} className="form-control mb-2" />
         <input type="text" placeholder="Kommentarer" value={description} onChange={e => setDescription(e.target.value)} className="form-control mb-2" />
         

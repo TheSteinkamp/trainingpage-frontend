@@ -13,7 +13,7 @@ function User() {
     password: ""
   });
 
-  const API_BASE = "http://localhost:8080/user"; 
+  const API_BASE = import.meta.env.VITE_API_URL; 
 
   // Hämta alla användare vid start
   useEffect(() => {
@@ -21,7 +21,7 @@ function User() {
   }, []);
 
   const fetchAllUsers = () => {
-    axios.get(`${API_BASE}/all`)
+    axios.get(`${API_BASE}/user/all`)
       .then(res => setUsers(res.data))
       .catch(() => setError("Kunde inte hämta alla användare"));
   };
@@ -29,7 +29,7 @@ function User() {
   // sök användare
   const fetchUserById = () => {
     if (!searchId) return;
-    axios.get(`${API_BASE}/${searchId}`)
+    axios.get(`${API_BASE}/user/${searchId}`)
       .then(res => {
         setSingleUser(res.data);
         setError("");
@@ -43,7 +43,7 @@ function User() {
   // ny användare
   const handleCreateUser = (e) => {
     e.preventDefault();
-    axios.post(`${API_BASE}/new`, formData)
+    axios.post(`${API_BASE}/user/new`, formData)
       .then(res => {
         alert(`Användare ${res.data.name} skapad!`);
         setFormData({ name: "", email: "", password: "" }); // Nollställ formulär
