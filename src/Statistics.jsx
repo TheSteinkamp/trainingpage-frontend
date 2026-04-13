@@ -9,7 +9,7 @@ function Statistics() {
   const [endDate, setEndDate] = useState("");
   const [view, setView] = useState("none"); 
   const [error, setError] = useState("");
-  const API_BASE = "http://localhost:8080/statistic";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   // alla träningar
   const getTrainings = () => {
@@ -24,7 +24,7 @@ function Statistics() {
 
   // statistik per användare
   const getUserStats = () => {
-    axios.get(`${API_BASE}/user/${userId}`)
+    axios.get(`${API_BASE}/statistic/user/${userId}`)
       .then(res => {
         setData(res.data);
         setView("stats");
@@ -36,7 +36,7 @@ function Statistics() {
   // statistik för period
   const getPeriodStats = () => {
     if(!startDate || !endDate) return alert("Välj datum!");
-    axios.get(`${API_BASE}/period/user/${userId}`, {
+    axios.get(`${API_BASE}/statistic/period/user/${userId}`, {
       params: { startDate, endDate }
     })
       .then(res => {
@@ -49,7 +49,7 @@ function Statistics() {
 
   // hitta alla användarstatistik
   const getAllUsers = () => {
-    axios.get(`${API_BASE}/users`)
+    axios.get(`${API_BASE}/statistic/users`)
       .then(res => {
         setUserMap(res.data);
         setView("users");
