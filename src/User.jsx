@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
 import axios from "axios";
 
 function User() {
+  const navigate = useNavigate();
+  const { auth, logout } = useAuth();
+  const user = auth?.user;
   const [users, setUsers] = useState([]);
   const [singleUser, setSingleUser] = useState(null);
   const [searchId, setSearchId] = useState("");
@@ -13,7 +18,7 @@ function User() {
     password: ""
   });
 
-  const API_BASE = import.meta.env.VITE_API_URL; 
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   // Hämta alla användare vid start
   useEffect(() => {
@@ -46,35 +51,47 @@ function User() {
     axios.post(`${API_BASE}/user/new`, formData)
       .then(res => {
         alert(`Användare ${res.data.name} skapad!`);
-        setFormData({ name: "", email: "", password: "" }); // Nollställ formulär
+        setFormData({ name: "", email: "", password: "" });
         fetchAllUsers();
       })
       .catch(() => setError("Kunde inte skapa användare"));
   };
 
+  function handleLogout() {
+    localStorage.removeItem("token");
+    logout();
+    navigate("/login");
+  }
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Användarhantering</h2>
-
+      <button
+        onClick={handleLogout}
+        className="btn btn-primary"
+      >Logga ut
+      </button>
+      <p>Inloggad som: {user?.name} (ID: {user?.userId})</p>
+      <p>Email: {user?.sub}</p>
       {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Skapa ny användare */}
       <div className="card p-4 mb-4 shadow-sm">
         <h3>Registrera ny användare</h3>
         <form onSubmit={handleCreateUser}>
-          <input 
+          <input
             type="text" placeholder="Namn" value={formData.name}
-            onChange={e => setFormData({...formData, name: e.target.value})}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             required className="form-control mb-2"
           />
-          <input 
+          <input
             type="email" placeholder="Email" value={formData.email}
-            onChange={e => setFormData({...formData, email: e.target.value})}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
             required className="form-control mb-2"
           />
-          <input 
+          <input
             type="password" placeholder="Lösenord" value={formData.password}
-            onChange={e => setFormData({...formData, password: e.target.value})}
+            onChange={e => setFormData({ ...formData, password: e.target.value })}
             required className="form-control mb-2"
           />
           <button type="submit" className="btn btn-success w-100">
@@ -87,13 +104,13 @@ function User() {
       <div className="mb-4">
         <h3>Sök användare på ID</h3>
         <div className="input-group">
-          <input 
-            type="number" className="form-control" placeholder="Ange ID..." 
-            value={searchId} onChange={e => setSearchId(e.target.value)} 
+          <input
+            type="number" className="form-control" placeholder="Ange ID..."
+            value={searchId} onChange={e => setSearchId(e.target.value)}
           />
           <button className="btn btn-primary" onClick={fetchUserById}>Sök</button>
         </div>
-        
+
         {singleUser && (
           <div className="mt-3 p-3 bg-light border rounded">
             <strong>Hittad:</strong> {singleUser.name} ({singleUser.email}) - ID: {singleUser.id}

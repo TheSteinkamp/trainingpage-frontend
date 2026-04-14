@@ -13,7 +13,6 @@ function RegisterForm() {
     });
     const API_BASE = import.meta.env.VITE_API_URL;
 
-    // ny användare
     const handleCreateUser = (e) => {
         e.preventDefault();
         axios.post(`${API_BASE}/user/register`, formData)
@@ -26,14 +25,10 @@ function RegisterForm() {
     };
 
     return (
-
-
         <div className="container mt-4">
-            <h2 className="mb-4">Ny användare</h2>
+            <h2 className="mb-4">Registrera ny användare</h2>
             {error && <div className="alert alert-danger">{error}</div>}
-            {/* Skapa ny användare */}
             <div className="card p-4 mb-4 shadow-sm">
-                <h3>Registrera ny användare</h3>
                 <form onSubmit={handleCreateUser}>
                     <input
                         type="text" placeholder="Namn" value={formData.name}
