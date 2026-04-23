@@ -17,17 +17,13 @@ function LoginForm() {
   async function handleLogin(e) {
     e.preventDefault();
     setError("");
-    console.log("LOGIN CLICKED");
     try {
       const response = await axios.post(`${API_BASE}/user/login`, formData);
-      console.log("RESPONSE:", response.data);
       const token = response.data.token;
-
       if (token) {
         localStorage.setItem("token", token);
         login(token);
-        console.log("NAVIGATING...");
-        navigate("/user");
+        navigate("/home");
       } else {
         setError("Servern returnerade ingen token.");
       }
