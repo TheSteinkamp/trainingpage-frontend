@@ -8,6 +8,7 @@ import User from './User'
 import { Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from "./ProtectedRoute";
+import Home from "./Home";
 
 function App() {
 
@@ -25,6 +26,9 @@ function App() {
                     } />
                     <Route path="/trainings" element={
                         <ProtectedRoute><Trainings /></ProtectedRoute>
+                    } />
+                    <Route path="/home" element={
+                        <ProtectedRoute><Home /></ProtectedRoute>
                     } />
                     <Route path="/statistics" element={
                         <ProtectedRoute><Statistics /></ProtectedRoute>
