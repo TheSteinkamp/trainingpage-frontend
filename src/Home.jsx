@@ -8,10 +8,10 @@ function Home() {
   const { auth, logout } = useAuth();
   const user = auth?.user;
   const [error, setError] = useState("");
-const [trainingList, setTrainingList] = useState (null)
+  const [trainingList, setTrainingList] = useState(null)
   const API_BASE = import.meta.env.VITE_API_URL;
 
-    useEffect(() => {
+  useEffect(() => {
     getTrainings();
   }, []);
 
@@ -21,15 +21,16 @@ const [trainingList, setTrainingList] = useState (null)
     navigate("/login");
   }
 
-    // alla träningar
+  // alla träningar
   const getTrainings = () => {
-    axios.get(`${API_BASE}/training/${userId}`)
+    axios.get(`${API_BASE}/training/${user?.userId}`)
       .then(res => {
         setTrainingList(res.data);
         setError("");
       })
       .catch(() => setError("Kunde inte hämta träningslista"));
   };
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Användarhantering</h2>
@@ -42,12 +43,12 @@ const [trainingList, setTrainingList] = useState (null)
       <p>Email: {user?.sub}</p>
       {error && <div className="alert alert-danger">{error}</div>}
 
-<button className="btn btn-primary" onClick={() => navigate('/newsession')}><span>Skapa ny träning</span></button>
+      <button className="btn btn-primary" onClick={() => navigate('/newsession')}><span>Skapa ny träning</span></button>
 
       {/* Vy 1: Lista med träningar */}
       {Array.isArray(trainingList) && (
         <div className="mt-4">
-          <h3 className="mb-3">Träningshistorik <small className="text-muted">Användare {userId}</small></h3>
+          <h3 className="mb-3">Träningshistorik <small className="text-muted">Användare {user?.userId}</small></h3>
           <div className="row">
             {trainingList.map(t => (
               <div key={t.id} className="col-md-6 mb-3">
