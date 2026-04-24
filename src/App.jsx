@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginForm from './LoginForm'
-import RegisterForm from './RegisterForm'
-import NewSession from './NewSession'
-import Trainings from './Trainings'
-import Statistics from './Statistics'
-import User from './User'
+import LoginForm from './pages/LoginForm'
+import RegisterForm from './pages/RegisterForm'
+import NewSession from './pages/NewSession'
+import Trainings from './pages/Trainings'
+import Statistics from './pages/Statistics'
+import User from './pages/User'
 import { Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from "./ProtectedRoute";
-import Home from "./Home";
-
+import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
+import Layout from "./components/Layout";
 function App() {
 
     return (
@@ -17,25 +17,21 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     {/* Öppna sidor */}
+                    <Route element={<Layout />}>
                     <Route path="/login" element={<LoginForm />} />
                     <Route path="/register" element={<RegisterForm />} />
 
-                    {/* Skyddade sidor */}
-                    <Route path="/newsession" element={
-                        <ProtectedRoute><NewSession /></ProtectedRoute>
-                    } />
-                    <Route path="/trainings" element={
-                        <ProtectedRoute><Trainings /></ProtectedRoute>
-                    } />
-                    <Route path="/home" element={
-                        <ProtectedRoute><Home /></ProtectedRoute>
-                    } />
-                    <Route path="/statistics" element={
-                        <ProtectedRoute><Statistics /></ProtectedRoute>
-                    } />
-                    <Route path="/user" element={
-                        <ProtectedRoute><User /></ProtectedRoute>
-                    } />
+                    {/* Skyddade sidor 
+                    <Route element={<ProtectedRoute />}>*/}
+                        
+                            <Route path="/newsession" element={<NewSession />} />
+                            <Route path="/trainings" element={<Trainings />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/statistics" element={<Statistics />} />
+                            <Route path="/user" element={<User />} />
+                        </Route>
+                    {/* </Route>*/}
+
 
                     {/* Standardväg om man skriver in fel URL */}
                     <Route path="*" element={<Navigate to="/login" />} />
