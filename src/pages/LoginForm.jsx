@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Form, Button, Card, Container, Alert } from "react-bootstrap";
+import '../styles/Login.css';
 
 function LoginForm() {
 
@@ -25,41 +27,61 @@ function LoginForm() {
         login(token);
         navigate("/home");
       } else {
-        setError("Servern returnerade ingen token.");
+        setError("Server did not return any token.");
       }
     } catch (error) {
       console.log("ERROR:", error);
-      setError(error.response?.data?.message || "Inloggning misslyckades");
+      setError(error.response?.data?.message || "Login failed");
     }
   }
 
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Logga in</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <div className="card p-4 mb-4 shadow-sm">
-        <form onSubmit={handleLogin}>
-          <input
-            type="email" placeholder="Email" value={formData.email}
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
-            required className="form-control mb-2"
-          />
-          <input
-            type="password" placeholder="Lösenord" value={formData.password}
-            onChange={e => setFormData({ ...formData, password: e.target.value })}
-            required className="form-control mb-2"
-          />
-          <button type="submit" className="btn btn-success w-100">
-            Logga in
-          </button>
-        </form>
-        <p className="text-center mt-3">
-          Inget konto?
-          <Link to="/register"> Registrera</Link>
-        </p>
-      </div>
-    </div>
+    <Container className="d-flex justify-content-center align-items-center">
+      <Card className="login-card shadow-lg">
+        <Card.Body className="p-5">
+          <div className="text-center mb-4">
+            <h2>TrainingPage</h2>
+            <p className="text-muted">Welcome back! Please login to your account.</p>
+          </div>
+
+          {error && <Alert variant="danger" className="py-2">{error}</Alert>}
+
+          <Form onSubmit={handleLogin}>
+            <Form.Group className="mb-3">
+              <Form.Label className="small fw-bold text-uppercase">Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={formData.email}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="small fw-bold text-uppercase">Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={e => setFormData({ ...formData, password: e.target.value })}
+                required
+              />
+            </Form.Group>
+
+            <Button type="submit" className="btn-primary-custom w-100 py-2 mb-3">
+              Login
+            </Button>
+          </Form>
+
+          <div className="text-center mt-3">
+            <span className="text-muted">Don't have an account?</span>
+            <Link to="/register" className="register-link ms-2">Register here</Link>
+          </div>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

@@ -1,13 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import '../styles/Style.css';
-
+import '../styles/Footer.css';
 function Footer() {
     const location = useLocation();
 
 
     return (
-        <footer className="custom-footer">
+        <footer className="custom-footer fixed-bottom">
             <Container>
                 <div className="footer-content">
                     <span className="footer-text">
@@ -19,7 +19,7 @@ function Footer() {
                         rel="noopener noreferrer"
                         className="footer-link"
                     >
-                        Besök vår hemsida
+                        Visit our website
                     </a>
                 </div>
             </Container>

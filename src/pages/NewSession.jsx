@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
+import "../styles/NewSession.css";
 
 function NewSession() {
   const [type, setType] = useState("");
@@ -25,13 +27,16 @@ function NewSession() {
   };
 
   const getAllExercises = () => {
+    const url = `${API_BASE}/exercise/all`;
+  console.log("Anropar URL:", url);
     axios.get(`${API_BASE}/exercise/all`)
       .then(res => {
+        console.log(res.data)
         setExerciseList(res.data);
         console.log("data : " + res.data);
         setError("");
       })
-      .catch(() => setError("Kunde inte hämta övningslista"));
+      .catch(() => setError("Could not fetch exercises"));
   };
 
   // spara träning
@@ -47,10 +52,10 @@ function NewSession() {
     };
     try {
       await axios.post(`${API_BASE}/training/new`, trainingData);
-      alert("Träning sparad!");
+      alert("New session saved!");
       handleCleanAll();
     } catch (err) {
-      console.error("Kunde inte spara:", err);
+      console.error("Couldn't save session:", err);
     }
   };
 
@@ -62,57 +67,126 @@ function NewSession() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Registrera nytt pass</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Fokus på passet (t.ex. överkropp)" value={type} onChange={e => setType(e.target.value)} className="form-control mb-2" />
-        <input type="number" placeholder="Minuter" value={duration} onChange={e => setDuration(e.target.value)} className="form-control mb-2" />
-        <input type="text" placeholder="Kommentarer" value={description} onChange={e => setDescription(e.target.value)} className="form-control mb-2" />
+    <Container className="session-container py-4">
+      <h2>Register New Session</h2>
+      <p className="session-subtitle">Fill in the details of your workout and add your exercises below.</p>
 
-        <h4>Övningar</h4>
-        {exercises.map((ex, index) => (
-          <div key={index} className="border p-2 mb-2">
-            <input type="text" placeholder="Namn" onChange={e => handleExerciseChange(index, "name", e.target.value)} className="form-control mb-1" />
-            <input type="text" placeholder="Kommentarer" onChange={e => handleExerciseChange(index, "description", e.target.value)} className="form-control mb-1" />
-            <input type="number" placeholder="Reps" onChange={e => handleExerciseChange(index, "repetitions", e.target.value)} className="form-control mb-1" />
-            <input type="number" placeholder="Sets" onChange={e => handleExerciseChange(index, "sets", e.target.value)} className="form-control mb-1" />
-          </div>
-        ))}
+      <Card className="form-card shadow-sm mb-5">
+        <Card.Body>
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col md={8}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Session Focus</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="e.g. Upper Body, Leg Day"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Duration (min)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={duration}
+                    onChange={e => setDuration(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <button type="button" onClick={addExerciseField} className="btn btn-secondary mb-2">
-          + Lägg till övning
-        </button>
-        <button type="submit" className="btn btn-primary w-100">Spara hela passet</button>
-      </form>
+            <Form.Group className="mb-4">
+              <Form.Label>Comments</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                placeholder="How did it feel?"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+              />
+            </Form.Group>
 
-      <div className="mt-4">
-        <h3 className="mb-3">Alla övningar</h3>
-        <div className="row">
-          {exerciseList.map(e => (
-            <div key={e.id} className="col-md-6 mb-3">
-              <div className="card border-start border-primary border-4 shadow-sm h-100">
-                <div className="card-body">
-                  <p className="card-text"><strong>Name of exercise:</strong> {e.name}</p>
-                  <p className="card-text"><strong>Body part to focus on:</strong> {e.bodyPart}</p>
-                  <p className="card-text"><strong>Equipment needed:</strong> {e.equipment}</p>
-                  <p className="card-text"><strong>Target muscles:</strong> {e.target}</p>
-                  <p className="card-text"><strong>Secondary muscles:</strong>
-                    {e.secondaryMuscles?.map((sm, i) => <li key={i}>{sm}</li>)}
-                  </p>
-                  <p className="card-text"><strong>Description:</strong> {e.description}</p>
-                  <p className="card-text"><strong>Instructions:</strong>
-                    {e.instructions?.map((ins, i) => <li key={i}>{ins}</li>)}
-                  </p>
-                  <p className="card-text"><strong>Difficulty:</strong> {e.difficulty}</p>
-                  <p className="card-text"><strong>Category:</strong> {e.category}</p>
-                </div>
-              </div>
+            <h4 className="section-divider">Exercises</h4>
+            {exercises.map((ex, index) => (
+              <Card key={index} className="exercise-input-card mb-3">
+                <Card.Body>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Control
+                        className="mb-2"
+                        placeholder="Exercise Name"
+                        onChange={e => handleExerciseChange(index, "name", e.target.value)}
+                      />
+                    </Col>
+                    <Col md={6}>
+                      <Form.Control
+                        className="mb-2"
+                        placeholder="Comments"
+                        onChange={e => handleExerciseChange(index, "description", e.target.value)}
+                      />
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Control
+                        type="number"
+                        placeholder="Reps"
+                        onChange={e => handleExerciseChange(index, "repetitions", e.target.value)}
+                      />
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Control
+                        type="number"
+                        placeholder="Sets"
+                        onChange={e => handleExerciseChange(index, "sets", e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            ))}
+
+            <div className="d-flex gap-3 mt-3">
+              <Button variant="outline-orange"
+                className="me-2" onClick={addExerciseField}>
+                + Add Exercise
+              </Button>
+              <Button type="submit" className="btn-primary-custom flex-grow-1">
+                Save Entire Workout
+              </Button>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          </Form>
+        </Card.Body>
+      </Card>
+
+      <h3>Exercise Library</h3>
+      {error && <p className="text-danger">{error}</p>}
+      <Row>
+        {exerciseList.map(e => (
+          <Col key={e.id} md={6} lg={4} className="mb-4">
+            <Card className="exercise-library-card h-100 shadow-sm">
+              <Card.Header className="library-card-header">{e.name}</Card.Header>
+              <Card.Body>
+                <div className="info-badge mb-2">{e.bodyPart} • {e.difficulty}</div>
+                <p className="card-detail"><strong>Target:</strong> {e.target}</p>
+                <p className="card-detail"><strong>Equipment:</strong> {e.equipment}</p>
+                <p className="card-description">{e.description}</p>
+                {e.instructions && (
+                  <div className="instructions-box">
+                    <strong>Instructions:</strong>
+                    <ol>
+                      {e.instructions.map((ins, i) => <li key={i}>{ins}</li>)}
+                    </ol>
+                  </div>
+                )}
+              </Card.Body>
+              <Card.Footer className="text-muted small">Category: {e.category}</Card.Footer>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
-
 export default NewSession;

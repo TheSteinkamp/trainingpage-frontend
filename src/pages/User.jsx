@@ -1,147 +1,96 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Container, Row, Col, Card, Button, Alert, Badge } from "react-bootstrap";
 import axios from "axios";
+import "../styles/User.css";
 
 function User() {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
   const user = auth?.user;
-  const [users, setUsers] = useState([]);
-  const [singleUser, setSingleUser] = useState(null);
-  const [searchId, setSearchId] = useState("");
   const [error, setError] = useState("");
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
-
+  const [trainingList, setTrainingList] = useState(null)
   const API_BASE = import.meta.env.VITE_API_URL;
 
-  // Hämta alla användare vid start
   useEffect(() => {
-    fetchAllUsers();
+    getTrainings();
   }, []);
 
-  const fetchAllUsers = () => {
-    axios.get(`${API_BASE}/user/all`)
-      .then(res => setUsers(res.data))
-      .catch(() => setError("Kunde inte hämta alla användare"));
-  };
-
-  // sök användare
-  const fetchUserById = () => {
-    if (!searchId) return;
-    axios.get(`${API_BASE}/user/${searchId}`)
+  // alla träningar
+  const getTrainings = () => {
+    axios.get(`${API_BASE}/training/user/${user?.userId}`)
       .then(res => {
-        setSingleUser(res.data);
+        setTrainingList(res.data);
         setError("");
       })
-      .catch(() => {
-        setSingleUser(null);
-        setError(`Användare med ID ${searchId} hittades inte`);
-      });
+      .catch(() => setError("Could not fetch training history."));
   };
-
-  // ny användare
-  const handleCreateUser = (e) => {
-    e.preventDefault();
-    axios.post(`${API_BASE}/user/new`, formData)
-      .then(res => {
-        alert(`Användare ${res.data.name} skapad!`);
-        setFormData({ name: "", email: "", password: "" });
-        fetchAllUsers();
-      })
-      .catch(() => setError("Kunde inte skapa användare"));
-  };
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    logout();
-    navigate("/login");
-  }
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Användarhantering</h2>
-      <button
-        onClick={handleLogout}
-        className="btn btn-primary"
-      >Logga ut
-      </button>
-      <p>Inloggad som: {user?.name} (ID: {user?.userId})</p>
-      <p>Email: {user?.sub}</p>
-      {error && <div className="alert alert-danger">{error}</div>}
+    <Container className="home-container py-4">
+      {/* Profilsektion */}
+      <Card className="profile-card shadow-sm mb-5">
+        <Card.Body className="d-flex justify-content-between align-items-center flex-wrap">
+          <div>
+            <h2>Welcome, {user?.name}!</h2>
+            <p className="text-muted mb-0">Logged in as: {user?.sub}</p>
+          </div>
+          <div className="button-group-profile mt-3 mt-md-0">
+            <Button
+              variant="outline-orange"
+              className="me-2"
+              onClick={() => navigate('/newsession')}
+            >
+              + New Session
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
 
-      {/* Skapa ny användare */}
-      <div className="card p-4 mb-4 shadow-sm">
-        <h3>Registrera ny användare</h3>
-        <form onSubmit={handleCreateUser}>
-          <input
-            type="text" placeholder="Namn" value={formData.name}
-            onChange={e => setFormData({ ...formData, name: e.target.value })}
-            required className="form-control mb-2"
-          />
-          <input
-            type="email" placeholder="Email" value={formData.email}
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
-            required className="form-control mb-2"
-          />
-          <input
-            type="password" placeholder="Lösenord" value={formData.password}
-            onChange={e => setFormData({ ...formData, password: e.target.value })}
-            required className="form-control mb-2"
-          />
-          <button type="submit" className="btn btn-success w-100">
-            Spara Användare
-          </button>
-        </form>
-      </div>
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* Sök användare */}
-      <div className="mb-4">
-        <h3>Sök användare på ID</h3>
-        <div className="input-group">
-          <input
-            type="number" className="form-control" placeholder="Ange ID..."
-            value={searchId} onChange={e => setSearchId(e.target.value)}
-          />
-          <button className="btn btn-primary" onClick={fetchUserById}>Sök</button>
-        </div>
+      {/* Träningshistorik */}
+      <div className="history-section">
+        <h3>Training History</h3>
 
-        {singleUser && (
-          <div className="mt-3 p-3 bg-light border rounded">
-            <strong>Hittad:</strong> {singleUser.name} ({singleUser.email}) - ID: {singleUser.id}
+        {Array.isArray(trainingList) && trainingList.length > 0 ? (
+          <Row>
+            {trainingList.map(t => (
+              <Col key={t.id} lg={6} className="mb-4">
+                <Card className="training-card h-100 shadow-sm border-0">
+                  <Card.Header className="d-flex justify-content-between align-items-center bg-white border-bottom-0 pt-3">
+                    <span className="training-date">{t.date}</span>
+                    <h4><Badge className="bg-orange">{t.type}</Badge></h4>        
+                  </Card.Header>
+                  <Card.Body>
+                    <div className="training-meta mb-3">
+                      <span className="me-3">⏱ <strong>{t.duration}</strong> min</span>
+                    </div>
+
+                    <h6 className="text-muted small text-uppercase fw-bold">Exercises:</h6>
+                    <ul className="exercise-mini-list">
+                      {t.exercise && t.exercise.map((e, index) => (
+                        <li key={index}>
+                          <strong>{e.name}</strong> - {e.sets} sets x {e.repetitions} reps
+                        </li>
+                      ))}
+                    </ul>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <div className="text-center py-5 empty-history">
+            <p className="text-muted">No training sessions found yet.</p>
+            <Link to="/newsession" className="btn btn-primary-custom">
+              Start your first session
+            </Link>
           </div>
         )}
       </div>
-
-      {/* Lista på användare */}
-      <div>
-        <h3>Alla registrerade användare</h3>
-        <table className="table table-striped table-hover mt-3">
-          <thead className="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Namn</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {users.length === 0 && <p className="text-muted">Inga användare hittades i databasen.</p>}
-      </div>
-    </div>
+    </Container>
   );
 }
 
