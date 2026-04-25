@@ -4,7 +4,9 @@ import '../styles/Style.css';
 
 function Navigation() {
   const location = useLocation();
-
+  const { auth, logout } = useAuth();
+  const user = auth?.user;
+  
   function handleLogout() {
     localStorage.removeItem("token");
     logout();
@@ -35,7 +37,7 @@ function Navigation() {
               onClick={handleLogout}
               className="mt-2 mt-lg-0"
             >
-              Logga ut
+              Log out
             </Button>
           </Nav>
         </Navbar.Collapse>

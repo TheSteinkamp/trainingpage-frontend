@@ -28,12 +28,10 @@ function NewSession() {
 
   const getAllExercises = () => {
     const url = `${API_BASE}/exercise/all`;
-  console.log("Anropar URL:", url);
     axios.get(`${API_BASE}/exercise/all`)
       .then(res => {
         console.log(res.data)
         setExerciseList(res.data);
-        console.log("data : " + res.data);
         setError("");
       })
       .catch(() => setError("Could not fetch exercises"));
@@ -47,7 +45,7 @@ function NewSession() {
       duration,
       description,
       date: new Date().toISOString().split('T')[0],
-      userId: 1,
+      userId: user?.userId,
       exercises: exercises
     };
     try {
@@ -170,7 +168,14 @@ function NewSession() {
               <Card.Body>
                 <div className="info-badge mb-2">{e.bodyPart} • {e.difficulty}</div>
                 <p className="card-detail"><strong>Target:</strong> {e.target}</p>
-                <p className="card-detail"><strong>Equipment:</strong> {e.equipment}</p>
+                {e.secondaryMuscles && (
+                  <div className="card-detail">
+                    <strong>Secondary muscles:</strong>
+                    <ol>
+                      {e.secondaryMuscles.map((ins, i) => <li key={i}>{ins}</li>)}
+                    </ol>
+                  </div>
+                )}
                 <p className="card-description">{e.description}</p>
                 {e.instructions && (
                   <div className="instructions-box">
