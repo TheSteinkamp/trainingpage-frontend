@@ -25,7 +25,7 @@ function LoginForm() {
       if (token) {
         localStorage.setItem("token", token);
         login(token);
-        navigate("/home");
+        navigate("/user");
       } else {
         setError("Server did not return any token.");
       }
