@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
 import "../styles/NewSession.css";
 
 function NewSession() {
+  const { auth, logout } = useAuth();
+  const user = auth?.user;
   const [type, setType] = useState("");
   const [duration, setDuration] = useState(0);
   const [description, setDescription] = useState("")

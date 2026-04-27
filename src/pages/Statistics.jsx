@@ -13,8 +13,9 @@ function Statistics() {
   const [error, setError] = useState("");
   const API_BASE = import.meta.env.VITE_API_URL;
 
+  //sessions per user
   const getTrainings = () => {
-    axios.get(`${API_BASE}/${userId}`)
+    axios.get(`${API_BASE}/statistics/user/${userId}`)
       .then(res => {
         setData(res.data);
         setView("list");
@@ -23,6 +24,7 @@ function Statistics() {
       .catch(() => setError("Could not fetch training list"));
   };
 
+  //statistics per user
   const getUserStats = () => {
     axios.get(`${API_BASE}/statistic/user/${userId}`)
       .then(res => {
@@ -32,7 +34,7 @@ function Statistics() {
       })
       .catch(() => setError("Could not fetch statistics"));
   };
-
+  //sessions per period and user
   const getPeriodStats = () => {
     if (!startDate || !endDate) return alert("Please select a date range!");
     axios.get(`${API_BASE}/statistic/period/user/${userId}`, {
@@ -45,7 +47,7 @@ function Statistics() {
       })
       .catch(() => setError("Could not fetch period statistics"));
   };
-
+  //statistics for all users
   const getAllUsers = () => {
     axios.get(`${API_BASE}/statistic/users`)
       .then(res => {
