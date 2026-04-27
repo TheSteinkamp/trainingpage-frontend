@@ -1,0 +1,24 @@
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    margin: 30px;
+}
+
+.register-link {
+    color: rgb(248, 133, 2);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+    color: rgb(210, 110, 2);
+}
+
+.form-control:focus {
+    border-color: rgb(248, 133, 2);
+    box-shadow: 0 0 0 0.25rem rgba(248, 133, 2, 0.25);
+}

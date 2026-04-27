@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 
-function User() {
+function UserStats() {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
   const user = auth?.user;
@@ -145,4 +145,4 @@ function User() {
   );
 }
 
-export default User;
+export default UserStats;
