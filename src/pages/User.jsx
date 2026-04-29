@@ -70,7 +70,7 @@ function User() {
 
                     <h6 className="text-muted small text-uppercase fw-bold">Exercises:</h6>
                     <ul className="exercise-mini-list">
-                      {t.exercise && t.exercise.map((e, index) => (
+                      {t.exercises && t.exercises.map((e, index) => (
                         <li key={index}>
                           <strong>{e.name}</strong> - {e.sets} sets x {e.repetitions} reps
                         </li>
