@@ -12,6 +12,7 @@ import User from "./pages/User";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import LayoutLogin from "./components/LayoutLogin";
+import SelectedTraining from "./pages/SelectedTraining";
 function App() {
 
     return (
@@ -24,18 +25,19 @@ function App() {
                         <Route path="/login" element={<LoginForm />} />
                         <Route path="/register" element={<RegisterForm />} />
                     </Route>
-                    {/* Skyddade sidor */}
-                    <Route element={<ProtectedRoute />}>
+                    {/* Skyddade sidor 
+                    <Route element={<ProtectedRoute />}>*/}
                         <Route element={<Layout />}>
                             <Route path="/newsession" element={<NewSession />} />
                             <Route path="/trainings" element={<Trainings />} />
                             <Route path="/user" element={<User />} />
                             <Route path="/statistics" element={<Statistics />} />
                             <Route path="/userstats" element={<UserStats />} />
+                            <Route path="/selectedtraining" element={<SelectedTraining />}/>
                         </Route>
-                    </Route>
+                    {/* </Route>
 
-                    {/* Standardväg om man skriver in fel URL */}
+                    Standardväg om man skriver in fel URL */}
                     <Route path="*" element={<Navigate to="/home" />} />
                 </Routes>
             </BrowserRouter>
