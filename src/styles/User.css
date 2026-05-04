@@ -1,3 +1,10 @@
+.user-container {
+  flex: 1;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  text-align: center;
+}
+
 .profile-card {
   border: none;
   border-radius: 15px;
@@ -5,24 +12,14 @@
   border-left: 6px solid rgb(248, 133, 2);
 }
 
-/*
-.bg-orange {
-  background-color: rgb(248, 133, 2) !important;
-}*/
-
-/* Träningskort */
-.training-card {
-  border-radius: 12px;
-  transition: transform 0.2s ease;
+.form-card {
+  border: none;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .training-card:hover {
   transform: scale(1.02);
-}
-
-.training-date {
-  font-weight: 700;
-  color: #333;
 }
 
 .exercise-mini-list {

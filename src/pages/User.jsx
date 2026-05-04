@@ -17,9 +17,18 @@ function User() {
     getTrainings();
   }, []);
 
+  const navigateToTraining = (training) => {
+    console.log("selected training:", training);
+    navigate('/selectedtraining', {
+      state: {
+        training: training
+      }
+    });
+  };
+
   // alla träningar
   const getTrainings = () => {
-    axios.get(`${API_BASE}/training/user/${user?.userId}`)
+    axios.get(`${API_BASE}/training/user/1`)
       .then(res => {
         setTrainingList(res.data);
         setError("");
@@ -28,15 +37,15 @@ function User() {
   };
 
   return (
-    <Container className="home-container py-4">
+    <Container className="user-container py-4">
       {/* Profilsektion */}
-      <Card className="profile-card shadow-sm mb-5">
+      <Card className="form-card shadow-sm mb-5">
         <Card.Body className="d-flex justify-content-between align-items-center flex-wrap">
           <div>
             <h2>Welcome, {user?.name}!</h2>
             <p className="text-muted mb-0">Logged in as: {user?.sub}</p>
           </div>
-          <div className="button-group-profile mt-3 mt-md-0">
+          <div>
             <Button
               variant="outline-orange"
               className="me-2"
@@ -51,7 +60,7 @@ function User() {
       {error && <Alert variant="danger">{error}</Alert>}
 
       {/* Träningshistorik */}
-      <div className="history-section">
+      <div>
         <h3>Training History</h3>
 
         {Array.isArray(trainingList) && trainingList.length > 0 ? (
@@ -60,8 +69,8 @@ function User() {
               <Col key={t.id} lg={6} className="mb-4">
                 <Card className="training-card h-100 shadow-sm border-0">
                   <Card.Header className="d-flex justify-content-between align-items-center bg-white border-bottom-0 pt-3">
-                    <span className="training-date">{t.date}</span>
-                    <h4><Badge className="bg-orange">{t.type}</Badge></h4>        
+                    <span><strong>{t.date}</strong></span>
+                    <h4><Badge className="bg-orange">{t.type}</Badge></h4>
                   </Card.Header>
                   <Card.Body>
                     <div className="training-meta mb-3">
@@ -77,6 +86,12 @@ function User() {
                       ))}
                     </ul>
                   </Card.Body>
+                  <Card.Footer>
+                    <Button variant="outline-orange"
+                      className="me-2" onClick={() => navigateToTraining(t)}>
+                      Show full session
+                    </Button>
+                  </Card.Footer>
                 </Card>
               </Col>
             ))}

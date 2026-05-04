@@ -12,6 +12,7 @@ import User from "./pages/User";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import LayoutLogin from "./components/LayoutLogin";
+import SelectedTraining from "./pages/SelectedTraining";
 function App() {
 
     return (
@@ -32,6 +33,7 @@ function App() {
                             <Route path="/user" element={<User />} />
                             <Route path="/statistics" element={<Statistics />} />
                             <Route path="/userstats" element={<UserStats />} />
+                            <Route path="/selectedtraining" element={<SelectedTraining />}/>
                         </Route>
                     {/* </Route>
 

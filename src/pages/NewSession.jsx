@@ -14,10 +14,10 @@ function NewSession() {
   const [exerciseList, setExerciseList] = useState([])
   const [bodyParts, setBodyParts] = useState([]);
   const [difficulty, setDifficulty] = useState([]);
-  const API_BASE = import.meta.env.VITE_API_URL;
-  const [error, setError] = useState("");
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const API_BASE = import.meta.env.VITE_API_URL;
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getAllBodyParts();
@@ -44,16 +44,6 @@ function NewSession() {
     };
     setSessionExercises([...sessionExercises, newExercise]);
   };
-
-  {/* const getAllExercises = () => {
-    axios.get(`${API_BASE}/exercise/all`)
-      .then(res => {
-        console.log(res.data)
-        setExerciseList(res.data);
-        setError("");
-      })
-      .catch(() => setError("Could not fetch exercises"));
-  }; */}
 
   const getAllBodyParts = () => {
     axios.get(`${API_BASE}/exercise/bodypartlist`)
@@ -169,7 +159,7 @@ function NewSession() {
               />
             </Form.Group>
 
-            <h4 className="section-divider">Exercises</h4>
+            <h4>Exercises</h4>
             {sessionExercises.map((ex, index) => (
               <Card key={index} className="exercise-input-card mb-3">
                 <Card.Body>
