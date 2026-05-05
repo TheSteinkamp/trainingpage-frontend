@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Button, Card, Row, Col, Container, Badge } from "react-bootstrap";
 import "../styles/Timer.css";
+import { useSound } from 'react-sounds';
 
 const Timer = () => {
     const [time, setTime] = useState(0);
@@ -11,6 +13,11 @@ const Timer = () => {
     const [isWorkPhase, setIsWorkPhase] = useState(true);
     const [currentInterval, setCurrentInterval] = useState(1);
     const [activeTime, setActiveTime] = useState(0);
+    const { play } = useSound('notification/warning');
+    //const location = useLocation();
+
+    //const exercise = location.state?.exercise;
+    //const session = location.state?.session;
 
     let seconds = ("0" + (Math.floor((time / 1000) % 60))).slice(-2);
     let minutes = ("0" + Math.floor((time / 60000) % 60)).slice(-2);
@@ -37,13 +44,16 @@ const Timer = () => {
             if (isWorkPhase) {
                 setIsWorkPhase(false);
                 setActiveTime(restTime);
+                play();
             } else {
                 if (currentInterval < noOfIntervals) {
                     setCurrentInterval(prevTime => prevTime + 1);
                     setIsWorkPhase(true);
                     setActiveTime(time);
+                    play();
                 } else {
                     setStart(false);
+                    play();
                 }
             }
         }
@@ -58,6 +68,15 @@ const Timer = () => {
         }
     };
 
+    const handleReset = () => {
+        setStart(false);
+        setTime(0);
+        setRestTime(0);
+        setActiveTime(0)
+        setNoOfIntervals(1);
+        setCurrentInterval(1);
+    }
+
     const adjustTime = (type, amount) => {
         if (!start) {
             if (type === 'work') setTime(prevTime => Math.max(0, prevTime + amount));
@@ -68,7 +87,6 @@ const Timer = () => {
     return (
         <Container className="py-4">
             <Card className="shadow-sm p-4 text-center">
-
                 <div className="mb-4">
                     {start && <Badge bg={isWorkPhase ? "danger" : "success"} className="fs-4">
                         {isWorkPhase ? "WORK!" : "REST"}
@@ -80,7 +98,6 @@ const Timer = () => {
                     </div>
                     <p>round {currentInterval} of {noOfIntervals}</p>
                 </div>
-
 
                 <Row className="mb-3">
                     <Col>
@@ -94,14 +111,12 @@ const Timer = () => {
                     <Col>
                         <div className="mb-3">
                             <h6>Number of intervals: {noOfIntervals}</h6>
-                            <Button className="btn-reset-custom" onClick={() => setNoOfIntervals(prev => Math.max(1, prev + 1))}>+</Button>
-                            <Button className="btn-reset-custom" onClick={() => setNoOfIntervals(prev => Math.max(1, prev - 1))}>-</Button>
-                        </div>
-
-                        <Button className="btn-start-custom" size="lg" onClick={handleStart} disabled={start}>Start training</Button><br></br>
+                            <Button variant="outline-dark" size="sm" onClick={() => setNoOfIntervals(prev => Math.max(1, prev - 1))}>–</Button>
+                            <Button variant="outline-dark" size="sm" onClick={() => setNoOfIntervals(prev => Math.max(1, prev + 1))}>+</Button>
+                            </div>
+                        <Button className="btn-start-custom" size="lg" onClick={handleStart} disabled={start}>Start timer</Button><br></br>
                         <Button className="btn-stop-custom" size="sm" onClick={() => setStart(false)}>Stop</Button>
-                        <Button className="btn-reset-custom" size="sm" onClick={() => { setStart(false); setTime(0); setRestTime(0); setActiveTime(0) }}>Reset</Button>
-
+                        <Button className="btn-reset-custom" size="sm" onClick={handleReset}>Reset</Button>
                     </Col>
                     <Col>
                         <h6>Rest interval</h6>
@@ -112,7 +127,6 @@ const Timer = () => {
                         <Button variant="outline-dark" size="sm" onClick={() => adjustTime('rest', -1000)}>-1s</Button>
                     </Col>
                 </Row>
-
             </Card>
         </Container>
     );

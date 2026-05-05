@@ -8,7 +8,7 @@ function Navigation() {
   const { auth, logout } = useAuth();
   const user = auth?.user;
   const navigate = useNavigate();
-  
+
   function handleLogout() {
     localStorage.removeItem("token");
     logout();
@@ -22,16 +22,16 @@ function Navigation() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav variant="underline" activeKey={location.pathname}>
-            <Nav.Link as={Link} to="/newsession" eventKey="/newsession">
-              New Session
-            </Nav.Link>
             <Nav.Link as={Link} to="/user" eventKey="/user">
               My Page
             </Nav.Link>
-            <Nav.Link as={Link} to="/statistics" eventKey="/statistics">
+            <Nav.Link as={Link} to="/newsession" eventKey="/newsession">
+              New Session
+            </Nav.Link>
+            <Nav.Link as={Link} to="/userstats" eventKey="/userstats">
               Statistics
             </Nav.Link>
-                        <Nav.Link as={Link} to="/timer" eventKey="/timer">
+            <Nav.Link as={Link} to="/timer" eventKey="/timer">
               Timer
             </Nav.Link>
           </Nav>
