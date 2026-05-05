@@ -7,7 +7,8 @@ function Navigation() {
   const location = useLocation();
   const { auth, logout } = useAuth();
   const user = auth?.user;
-
+  const navigate = useNavigate();
+  
   function handleLogout() {
     localStorage.removeItem("token");
     logout();
@@ -29,6 +30,9 @@ function Navigation() {
             </Nav.Link>
             <Nav.Link as={Link} to="/statistics" eventKey="/statistics">
               Statistics
+            </Nav.Link>
+                        <Nav.Link as={Link} to="/timer" eventKey="/timer">
+              Timer
             </Nav.Link>
           </Nav>
           <Nav className="ms-auto">
