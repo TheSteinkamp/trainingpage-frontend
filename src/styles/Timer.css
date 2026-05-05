@@ -1,0 +1,54 @@
+.btn-start-custom {
+  background-color:rgb(248, 133, 2);
+  color: white;
+
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px;
+
+  border: none !important;
+  padding: 10px !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-start-custom:hover {
+  background-color: rgb(192, 103, 2) !important;
+
+}
+.btn-stop-custom {
+  background-color: #c20202;
+  color: white;
+
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px;
+
+  border: none !important;
+  padding: 10px !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-stop-custom:hover {
+  background-color: #8f0101 !important;
+
+}
+.btn-reset-custom {
+  background-color: #1a5276;
+  color: white;
+
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px;
+
+  border: none !important;
+  padding: 10px !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-reset-custom:hover {
+  background-color: #154360 !important;
+
+}

@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import LayoutLogin from "./components/LayoutLogin";
 import SelectedTraining from "./pages/SelectedTraining";
+import Timer from "./components/Timer";
 function App() {
 
     return (
@@ -34,6 +35,7 @@ function App() {
                             <Route path="/statistics" element={<Statistics />} />
                             <Route path="/userstats" element={<UserStats />} />
                             <Route path="/selectedtraining" element={<SelectedTraining />}/>
+                            <Route path="/timer" element={<Timer/>} />
                         </Route>
                     {/* </Route>
 

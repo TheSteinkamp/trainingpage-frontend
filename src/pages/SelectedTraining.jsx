@@ -70,7 +70,6 @@ function SelectedTraining() {
             <Card.Body className="p-0">
               <Row className="g-0">
 
-                {/* VÄNSTER SIDA */}
                 <Col md={4} className="exercise-left">
                   <h5 className="fw-bold">{sessionEx.name}</h5>
                   <Badge className="bg-orange mb-2">
@@ -85,7 +84,6 @@ function SelectedTraining() {
                   {!details && <Badge bg="secondary" className="mt-2">Custom</Badge>}
                 </Col>
 
-                {/* HÖGER SIDA */}
                 <Col md={8} className="p-4">
                   <div className="small">
                     <p className="mb-1"><strong>About the exercise:</strong></p>
