@@ -159,7 +159,7 @@ function NewSession() {
               />
             </Form.Group>
 
-            <h4>Exercises</h4>
+            <h4 className="section-header">Exercises</h4>
             {sessionExercises.map((ex, index) => (
               <Card key={index} className="exercise-input-card mb-3">
                 <Card.Body>

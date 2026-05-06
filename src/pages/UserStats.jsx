@@ -1,53 +1,89 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../contexts/AuthContext";
 import { Container, Row, Col, Card, Form, Button, Table, Badge, Alert } from "react-bootstrap";
 import "../styles/Statistics.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function UserStats() {
-  const [data, setData] = useState(null);
+  const { auth, logout } = useAuth();
+  const user = auth?.user;
+  const [chartMap, setChartMap] = useState({});
+  const [stats, setStats] = useState(null);
+  const [sessions, setSessions] = useState(null);
   const [userMap, setUserMap] = useState({});
-  const [userId, setUserId] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [view, setView] = useState("none");
   const [error, setError] = useState("");
   const API_BASE = import.meta.env.VITE_API_URL;
 
-  //sessions per user
-  const getTrainings = () => {
-    axios.get(`${API_BASE}/statistics/user/${userId}`)
+  //statistics per user
+  const getUserStats = async () => {
+    try {
+      const statsRes = await axios.get(`${API_BASE}/statistic/stats`, {
+        params: { id: user?.userId }
+      });
+      const sessionsRes = await axios.get(`${API_BASE}/statistic/session`, {
+        params: { id: user?.userId }
+      });
+      const sortedSession = sessionsRes.data.sort((a, b) => (a.date < b.date ? 1 : b.date < a.date ? -1 : 0));
+      setStats(statsRes.data);
+      setSessions(sortedSession);
+      setView("stats");
+      setError("");
+    } catch (error) {
+      setError("Could not fetch statistics")
+    }
+  };
+
+  //sessions per period and user
+  const getPeriodStats = async () => {
+    try {
+      const formattedStart = formatLocal(startDate);
+      const formattedEnd = formatLocal(endDate);
+
+      const statsRes = await axios.get(`${API_BASE}/statistic/period/stats`, {
+        params: {
+          id: user?.userId,
+          startDate: formattedStart,
+          endDate: formattedEnd
+        }
+      });
+      const sessionsRes = await axios.get(`${API_BASE}/statistic/period/session`, {
+        params: {
+          id: user?.userId,
+          startDate: formattedStart,
+          endDate: formattedEnd
+        }
+      });
+
+      const sortedSession = sessionsRes.data.sort((a, b) => (a.date < b.date ? 1 : b.date < a.date ? -1 : 0));
+      setStats(statsRes.data);
+      setSessions(sortedSession);
+      setView("stats");
+      setError("");
+    } catch (error) {
+      setError("Could not fetch period statistics")
+    }
+  };
+
+  //Charts
+  const getCharts = () => {
+    console.log("User ID:", user?.userId)
+    axios.get(`${API_BASE}/statistic/chart`, {
+      params: { id: user?.userId }
+    })
       .then(res => {
-        setData(res.data);
-        setView("list");
+        setChartMap(res.data);
+        setView("chart");
         setError("");
       })
       .catch(() => setError("Could not fetch training list"));
   };
 
-  //statistics per user
-  const getUserStats = () => {
-    axios.get(`${API_BASE}/statistic/user/${userId}`)
-      .then(res => {
-        setData(res.data);
-        setView("stats");
-        setError("");
-      })
-      .catch(() => setError("Could not fetch statistics"));
-  };
-  //sessions per period and user
-  const getPeriodStats = () => {
-    if (!startDate || !endDate) return alert("Please select a date range!");
-    axios.get(`${API_BASE}/statistic/period/user/${userId}`, {
-      params: { startDate, endDate }
-    })
-      .then(res => {
-        setData(res.data);
-        setView("stats");
-        setError("");
-      })
-      .catch(() => setError("Could not fetch period statistics"));
-  };
-  //statistics for all users
+  //statistics for all users (leaderboard)
   const getAllUsers = () => {
     axios.get(`${API_BASE}/statistic/users`)
       .then(res => {
@@ -56,6 +92,14 @@ function UserStats() {
         setError("");
       })
       .catch(() => setError("Could not fetch user leaderboard"));
+  };
+
+  const formatLocal = (date) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -67,23 +111,21 @@ function UserStats() {
         <Card.Body>
           <Row className="g-3 align-items-end">
             <Col md={3}>
-              <Form.Label className="fw-bold small text-uppercase">From Date</Form.Label>
-              <Form.Control
-                type="date"
-                onChange={e => setStartDate(e.target.value)}
-              />
+              <Form.Label className="fw-bold small text-uppercase">From Date </Form.Label>
+              <Col>
+                <DatePicker selected={startDate} dateFormat="dd/MM/yyyy" onChange={(startDate) => setStartDate(startDate)} />
+              </Col>
             </Col>
             <Col md={3}>
               <Form.Label className="fw-bold small text-uppercase">To Date</Form.Label>
-              <Form.Control
-                type="date"
-                onChange={e => setEndDate(e.target.value)}
-              />
+              <Col>
+                <DatePicker selected={endDate} dateFormat="dd/MM/yyyy" onChange={(endDate) => setEndDate(endDate)} />
+              </Col>
             </Col>
-            <Col md={4} className="d-flex gap-2">
-              <Button variant="outline-orange" className="flex-grow-1" onClick={getTrainings}>Sessions</Button>
+            <Col md={6} className="d-flex gap-2">
+              <Button variant="outline-orange" className="flex-grow-1" onClick={getCharts}>Chart</Button>
               <Button variant="outline-orange" className="flex-grow-1" onClick={getUserStats}>Stats</Button>
-              <Button variant="outline-orange" className="flex-grow-1" onClick={getPeriodStats}>Period</Button>
+              <Button variant="outline-orange" className="flex-grow-1" onClick={getPeriodStats}>Stats for period</Button>
             </Col>
           </Row>
           <div className="mt-3">
@@ -96,65 +138,93 @@ function UserStats() {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* View 1: Training History List */}
-      {view === "list" && Array.isArray(data) && (
+      {/* View 1: charts */}
+      {view === "chart" && chartMap && (
         <div className="mt-4">
-          <h3 className="section-title-orange h4 mb-3">Sessions for User {userId}</h3>
-          <Row>
-            {data.map(t => (
-              <Col key={t.id} md={6} className="mb-3">
-                <Card className="training-item-card border-0 shadow-sm border-start border-orange border-4">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between">
-                      <h5 className="mb-1">Session #{t.id}</h5>
-                      <small className="text-muted">{t.date}</small>
-                    </div>
-                    <p className="mb-0">⏱ <strong>{t.duration}</strong> minutes</p>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+          <h3>Top chart</h3>
+          <div className="table-wrapper shadow-sm rounded overflow-hidden">
+            <Table hover responsive align="middle" className="mb-0 bg-white">
+              <thead className="bg-orange text-white">
+                <tr>
+                  <th className="ps-4 border-0">Session's focus</th>
+                  <th className="text-center border-0">Completed Sessions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(chartMap).sort((a, b) => b[1] - a[1]).map(([type, count]) => (
+                  <tr key={type}>
+                    <td className="stat-list">{type}</td>
+                    <td className="text-center">
+                      <Badge pill className="bg-orange-light text-orange px-3 py-2">
+                        {count} Sessions
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
       )}
 
-      {/* View 2: Stats Overview (Bento Style) */}
-      {view === "stats" && data && (
+      {/* View 2: Stats Overview */}
+      {view === "stats" && stats && sessions && (
         <div className="mt-4">
-          <h3 className="section-title-orange h4 mb-3 text-center">Overview</h3>
+          <h3>Overview</h3>
           <Row className="g-3">
             <Col md={4}>
-              <Card className="stats-box text-center shadow-sm border-0 bg-dark text-white">
+              <Card className="stats-box bg-dark text-white">
                 <Card.Body>
-                  <div className="display-5 fw-bold">{data.totalTrainings}</div>
+                  <div className="display-5 fw-bold">{stats.totalTrainings}</div>
                   <div className="text-uppercase small opacity-75">Total Sessions</div>
                 </Card.Body>
               </Card>
             </Col>
             <Col md={4}>
-              <Card className="stats-box text-center shadow-sm border-0 bg-orange text-white">
+              <Card className="stats-box bg-orange text-white">
                 <Card.Body>
-                  <div className="display-5 fw-bold">{data.totalDuration}</div>
+                  <div className="display-5 fw-bold">{stats.totalDuration}</div>
                   <div className="text-uppercase small opacity-75">Total Minutes</div>
                 </Card.Body>
               </Card>
             </Col>
             <Col md={4}>
-              <Card className="stats-box text-center shadow-sm border-0 bg-light">
+              <Card className="stats-box bg-light">
                 <Card.Body>
-                  <div className="display-5 fw-bold text-dark">{data.averageDuration?.toFixed(1)}</div>
-                  <div className="text-uppercase small text-muted">Avg. Duration</div>
+                  <div className="display-5 fw-bold text-dark">{stats.averageDuration?.toFixed(1)}</div>
+                  <div className="text-uppercase small text-muted">Avg. Duration (minutes)</div>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
+          <br></br>
+
+          <div className="mt-4">
+            <h3>Sessions</h3>
+            <div className="table-wrapper shadow-sm rounded">
+              <Table hover responsive align="middle" className="mb-0 bg-white">
+                <tbody>
+                  {sessions.map(t => (
+                    <tr key={t.id}>
+                      <td><h4 className="stat-list">{t.type}</h4></td>
+                      <td className="text-center">
+                        <h4><Badge className="bg-orange-light text-orange px-3 py-2">
+                          {t.date} — {t.duration} min
+                        </Badge></h4>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* View 3: Leaderboard (Table) */}
-      {view === "users" && (
+      {/* View 3: Leaderboard */}
+      {view === "users" && userMap && (
         <div className="mt-4">
-          <h3 className="section-title-orange h4 mb-3 text-center">Leaderboard</h3>
+          <h3>Leaderboard</h3>
           <div className="table-wrapper shadow-sm rounded overflow-hidden">
             <Table hover responsive align="middle" className="mb-0 bg-white">
               <thead className="bg-orange text-white">
@@ -166,7 +236,7 @@ function UserStats() {
               <tbody>
                 {Object.entries(userMap).map(([name, count]) => (
                   <tr key={name}>
-                    <td className="ps-4 fw-bold">{name}</td>
+                    <td className="stat-list">{name}</td>
                     <td className="text-center">
                       <Badge pill className="bg-orange-light text-orange px-3 py-2">
                         {count} Sessions

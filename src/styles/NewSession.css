@@ -10,7 +10,7 @@
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-h4 {
+.section-header {
   color: rgb(248, 133, 2);
   font-weight: 700;
   border-bottom: 2px solid rgba(26, 82, 118, 0.1);
