@@ -28,9 +28,10 @@ function User() {
 
   // alla träningar
   const getTrainings = () => {
-    axios.get(`${API_BASE}/training/user/1`)
+    axios.get(`${API_BASE}/training/user/${user.userId}`)
       .then(res => {
-        setTrainingList(res.data);
+        const sortedList = res.data.sort((a, b) => (a.date < b.date ? 1 : b.date < a.date ? -1 : 0));
+        setTrainingList(sortedList);
         setError("");
       })
       .catch(() => setError("Could not fetch training history."));
@@ -38,7 +39,6 @@ function User() {
 
   return (
     <Container className="user-container py-4">
-      {/* Profilsektion */}
       <Card className="form-card shadow-sm mb-5">
         <Card.Body className="d-flex justify-content-between align-items-center flex-wrap">
           <div>
@@ -59,10 +59,8 @@ function User() {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* Träningshistorik */}
       <div>
         <h3>Training History</h3>
-
         {Array.isArray(trainingList) && trainingList.length > 0 ? (
           <Row>
             {trainingList.map(t => (

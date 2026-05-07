@@ -22,6 +22,8 @@
   border: 1px dashed #1a5276;
   background-color: rgba(26, 82, 118, 0.02);
   border-radius: 10px;
+  position: relative;
+  overflow: hidden;
 }
 
 .exercise-library-card {
@@ -36,7 +38,7 @@
 }
 
 .library-card-header {
-  background-color:  rgb(248, 133, 2);
+  background-color: rgb(248, 133, 2);
   color: white;
   font-weight: 700;
   font-size: 1.1rem;
@@ -65,4 +67,11 @@
 .instructions-box ol {
   padding-left: 20px;
   margin-top: 5px;
+}
+
+.delete-exercise-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 }

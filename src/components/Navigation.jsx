@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { useAuth } from "../contexts/AuthContext";
-import '../styles/Style.css';
 
 function Navigation() {
   const location = useLocation();

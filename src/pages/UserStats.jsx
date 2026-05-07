@@ -19,7 +19,6 @@ function UserStats() {
   const [error, setError] = useState("");
   const API_BASE = import.meta.env.VITE_API_URL;
 
-  //statistics per user
   const getUserStats = async () => {
     try {
       const statsRes = await axios.get(`${API_BASE}/statistic/stats`, {
@@ -38,7 +37,6 @@ function UserStats() {
     }
   };
 
-  //sessions per period and user
   const getPeriodStats = async () => {
     try {
       const formattedStart = formatLocal(startDate);
@@ -69,7 +67,6 @@ function UserStats() {
     }
   };
 
-  //Charts
   const getCharts = () => {
     console.log("User ID:", user?.userId)
     axios.get(`${API_BASE}/statistic/chart`, {
@@ -83,7 +80,6 @@ function UserStats() {
       .catch(() => setError("Could not fetch training list"));
   };
 
-  //statistics for all users (leaderboard)
   const getAllUsers = () => {
     axios.get(`${API_BASE}/statistic/users`)
       .then(res => {
@@ -113,13 +109,19 @@ function UserStats() {
             <Col md={3}>
               <Form.Label className="fw-bold small text-uppercase">From Date </Form.Label>
               <Col>
-                <DatePicker selected={startDate} dateFormat="dd/MM/yyyy" onChange={(startDate) => setStartDate(startDate)} />
+                <DatePicker selected={startDate}
+                  dateFormat="dd/MM/yyyy"
+                  onChange={(startDate) => setStartDate(startDate)}
+                  customInput={<Form.Control />} />
               </Col>
             </Col>
             <Col md={3}>
               <Form.Label className="fw-bold small text-uppercase">To Date</Form.Label>
               <Col>
-                <DatePicker selected={endDate} dateFormat="dd/MM/yyyy" onChange={(endDate) => setEndDate(endDate)} />
+                <DatePicker selected={endDate}
+                  dateFormat="dd/MM/yyyy"
+                  onChange={(endDate) => setEndDate(endDate)}
+                  customInput={<Form.Control />} />
               </Col>
             </Col>
             <Col md={6} className="d-flex gap-2">

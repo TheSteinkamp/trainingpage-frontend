@@ -3,6 +3,7 @@ import axios from "axios";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/NewSession.css";
+import DatePicker from "react-datepicker";
 
 function NewSession() {
   const { auth, logout } = useAuth();
@@ -10,6 +11,7 @@ function NewSession() {
   const [type, setType] = useState("");
   const [duration, setDuration] = useState(0);
   const [description, setDescription] = useState("")
+  const [date, setDate] = useState(new Date());
   const [sessionExercises, setSessionExercises] = useState([]);
   const [exerciseList, setExerciseList] = useState([])
   const [bodyParts, setBodyParts] = useState([]);
@@ -32,6 +34,14 @@ function NewSession() {
     const updatedExercises = [...sessionExercises];
     updatedExercises[index][field] = value;
     setSessionExercises(updatedExercises);
+  };
+
+  const formatLocal = (date) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const addSelectedExercise = (exercise) => {
@@ -81,6 +91,7 @@ function NewSession() {
   // spara träning
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formattedDate = formatLocal(date);
     const exerciseToSave = sessionExercises.map(ex => ({
       exerciseId: ex.id,
       repetitions: ex.repetitions,
@@ -92,7 +103,7 @@ function NewSession() {
       type,
       duration,
       description,
-      date: new Date().toISOString().split('T')[0],
+      date: formattedDate,
       userId: user?.userId,
       sessionExercises: exerciseToSave
     };
@@ -116,6 +127,11 @@ function NewSession() {
     setExerciseList([]);
   };
 
+  const deleteExercise = (indexToRemove) => {
+    const newList = sessionExercises.filter((_, index) => index !== indexToRemove);
+    setSessionExercises(newList);
+  }
+
   return (
     <Container className="session-container py-4">
       <h2>Register New Session</h2>
@@ -125,7 +141,7 @@ function NewSession() {
         <Card.Body>
           <Form onSubmit={handleSubmit}>
             <Row>
-              <Col md={8}>
+              <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Session Focus</Form.Label>
                   <Form.Control
@@ -136,7 +152,7 @@ function NewSession() {
                   />
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={3}>
                 <Form.Group className="mb-3">
                   <Form.Label>Duration (min)</Form.Label>
                   <Form.Control
@@ -146,8 +162,19 @@ function NewSession() {
                   />
                 </Form.Group>
               </Col>
+              <Col md={3}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Date</Form.Label>
+                  <DatePicker
+                    selected={date}
+                    value={date || null}
+                    dateFormat="dd/MM/yyyy"
+                    onChange={e => setDate(e)}
+                    customInput={<Form.Control />}
+                  />
+                </Form.Group>
+              </Col>
             </Row>
-
             <Form.Group className="mb-4">
               <Form.Label>Comments</Form.Label>
               <Form.Control
@@ -163,6 +190,12 @@ function NewSession() {
             {sessionExercises.map((ex, index) => (
               <Card key={index} className="exercise-input-card mb-3">
                 <Card.Body>
+                  <Button variant="danger"
+                    onClick={() => deleteExercise(index)}
+                    size="sm"
+                    className="delete-exercise-btn"
+                  >
+                    Delete</Button>
                   <Row>
                     <Col md={6}>
                       <Form.Label>Name</Form.Label>

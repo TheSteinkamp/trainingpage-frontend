@@ -49,13 +49,12 @@ function SelectedTraining() {
 
   if (!sessionData) return <Container><Alert variant="danger">No data found</Alert></Container>;
 
-
   return (
     <Container className="training-container py-4">
       <Card className="form-card shadow-sm mb-5">
         <Card.Body className="d-flex justify-content-center align-items-center flex-wrap text-center">
           <div>
-            <span className="training-date"><strong>{sessionData.date} - ⏱ {sessionData.duration} min</strong></span>
+            <span className="training-date"><strong>{sessionData.date} - {sessionData.duration} min</strong></span>
             <h4><Badge className="bg-orange">Focus: {sessionData.type}</Badge></h4>
             <p><strong>Session comments: </strong>{sessionData.description}</p>
           </div>
