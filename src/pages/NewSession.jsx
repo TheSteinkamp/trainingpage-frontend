@@ -124,6 +124,7 @@ function NewSession() {
     setDuration(0);
     setSelectedBodyPart("");
     setSelectedDifficulty("");
+    setDate(null);
     setExerciseList([]);
   };
 
