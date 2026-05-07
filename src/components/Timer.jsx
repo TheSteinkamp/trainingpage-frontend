@@ -14,10 +14,6 @@ const Timer = () => {
     const [currentInterval, setCurrentInterval] = useState(1);
     const [activeTime, setActiveTime] = useState(0);
     const { play } = useSound('notification/warning');
-    //const location = useLocation();
-
-    //const exercise = location.state?.exercise;
-    //const session = location.state?.session;
 
     let seconds = ("0" + (Math.floor((time / 1000) % 60))).slice(-2);
     let minutes = ("0" + Math.floor((time / 60000) % 60)).slice(-2);
@@ -96,7 +92,7 @@ const Timer = () => {
                         {("0" + (Math.floor((activeTime / 1000) % 60))).slice(-2)}:
                         {("0" + (Math.floor((activeTime % 1000) / 10))).slice(-2)}
                     </div>
-                    <p>round {currentInterval} of {noOfIntervals}</p>
+                    <p>Round {currentInterval} of {noOfIntervals}</p>
                 </div>
 
                 <Row className="mb-3">

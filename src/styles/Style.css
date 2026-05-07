@@ -42,15 +42,13 @@ h3 {
 .btn-primary-custom {
   background-color: #1a5276;
   color: white;
-
   text-decoration: none;
   display: inline-block;
-  margin-top: 10px;
-
   border: none !important;
-  padding: 10px !important;
+  padding: 10px 20px !important;
   font-weight: 600;
   transition: all 0.3s ease;
+  line-height: 1.5;
 }
 
 .btn-primary-custom:hover {
@@ -59,9 +57,12 @@ h3 {
 }
 
 .btn-outline-orange {
-  color: rgb(248, 133, 2);
-  border-color: rgb(248, 133, 2);
+color: rgb(248, 133, 2);
+  border: 2px solid rgb(248, 133, 2) !important;
   font-weight: 600;
+  padding: 10px 20px !important; 
+  line-height: 1.5;
+  transition: all 0.3s ease;
 }
 
 .btn-outline-orange:hover {
