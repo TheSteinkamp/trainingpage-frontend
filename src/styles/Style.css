@@ -1,0 +1,71 @@
+.main-wrapper {
+  background-image: url('./background2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  flex: 1;
+  margin-top: 20px;
+  margin-bottom: 80px;
+}
+
+h1,
+.navbar-brand {
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  color: rgb(248, 133, 2);
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 3rem;
+  letter-spacing: 3px;
+}
+
+h2,
+h3 {
+  color: rgb(248, 133, 2);
+  font-weight: 800;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.btn-primary-custom {
+  background-color: #1a5276;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  border: none !important;
+  padding: 10px 20px !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  line-height: 1.5;
+}
+
+.btn-primary-custom:hover {
+  background-color: #154360 !important;
+  transform: translateY(-2px);
+}
+
+.btn-outline-orange {
+color: rgb(248, 133, 2);
+  border: 2px solid rgb(248, 133, 2) !important;
+  font-weight: 600;
+  padding: 10px 20px !important; 
+  line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-orange:hover {
+  background-color: rgb(248, 133, 2);
+  color: white;
+}

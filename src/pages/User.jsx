@@ -1,0 +1,110 @@
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { Container, Row, Col, Card, Button, Alert, Badge } from "react-bootstrap";
+import axios from "axios";
+import "../styles/User.css";
+
+function User() {
+  const navigate = useNavigate();
+  const { auth, logout } = useAuth();
+  const user = auth?.user;
+  const [error, setError] = useState("");
+  const [trainingList, setTrainingList] = useState(null)
+  const API_BASE = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    getTrainings();
+  }, []);
+
+  const navigateToTraining = (training) => {
+    console.log("selected training:", training);
+    navigate('/selectedtraining', {
+      state: {
+        training: training
+      }
+    });
+  };
+
+  // alla träningar
+  const getTrainings = () => {
+    axios.get(`${API_BASE}/training/user/${user.userId}`)
+      .then(res => {
+        const sortedList = res.data.sort((a, b) => (a.date < b.date ? 1 : b.date < a.date ? -1 : 0));
+        setTrainingList(sortedList);
+        setError("");
+      })
+      .catch(() => setError("Could not fetch training history."));
+  };
+
+  return (
+    <Container className="user-container py-4">
+      <Card className="form-card shadow-sm mb-5">
+        <Card.Body className="d-flex justify-content-between align-items-center flex-wrap">
+          <div>
+            <h2>Welcome, {user?.name}!</h2>
+            <p className="text-muted mb-0">Logged in as: {user?.sub}</p>
+          </div>
+          <div>
+            <Button
+              variant="outline-orange"
+              className="me-2"
+              onClick={() => navigate('/newsession')}
+            >
+              + New Session
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <div>
+        <h3>Training History</h3>
+        {Array.isArray(trainingList) && trainingList.length > 0 ? (
+          <Row>
+            {trainingList.map(t => (
+              <Col key={t.id} lg={6} className="mb-4">
+                <Card className="training-card h-100 shadow-sm border-0">
+                  <Card.Header className="d-flex justify-content-between align-items-center bg-white border-bottom-0 pt-3">
+                    <span><strong>{t.date}</strong></span>
+                    <h4><Badge className="bg-orange">{t.type}</Badge></h4>
+                  </Card.Header>
+                  <Card.Body>
+                    <div className="training-meta mb-3">
+                      <span className="me-3">⏱ <strong>{t.duration}</strong> min</span>
+                    </div>
+
+                    <h6 className="text-muted small text-uppercase fw-bold">Exercises:</h6>
+                    <ul className="exercise-mini-list">
+                      {t.exercises && t.exercises.map((e, index) => (
+                        <li key={index}>
+                          <strong>{e.name}</strong> - {e.sets} sets x {e.repetitions} reps
+                        </li>
+                      ))}
+                    </ul>
+                  </Card.Body>
+                  <Card.Footer>
+                    <Button variant="outline-orange"
+                      className="me-2" onClick={() => navigateToTraining(t)}>
+                      Show full session
+                    </Button>
+                  </Card.Footer>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <div className="text-center py-5 empty-history">
+            <p className="text-muted">No training sessions found yet.</p>
+            <Link to="/newsession" className="btn btn-primary-custom">
+              Start your first session
+            </Link>
+          </div>
+        )}
+      </div>
+    </Container>
+  );
+}
+
+export default User;
