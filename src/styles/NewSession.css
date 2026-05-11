@@ -75,3 +75,8 @@
   right: 10px;
   z-index: 10;
 }
+
+.react-datepicker-wrapper {
+  display: block;
+  width: 100%;
+}
