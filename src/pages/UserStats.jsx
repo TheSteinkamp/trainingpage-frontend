@@ -236,16 +236,18 @@ function UserStats() {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(userMap).map(([name, count]) => (
-                  <tr key={name}>
-                    <td className="stat-list">{name}</td>
-                    <td className="text-center">
-                      <Badge pill className="bg-orange-light text-orange px-3 py-2">
-                        {count} Sessions
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
+                {Object.entries(userMap)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([name, count]) => (
+                    <tr key={name}>
+                      <td className="stat-list">{name}</td>
+                      <td className="text-center">
+                        <Badge pill className="bg-orange-light text-orange px-3 py-2">
+                          {count} Sessions
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
           </div>
